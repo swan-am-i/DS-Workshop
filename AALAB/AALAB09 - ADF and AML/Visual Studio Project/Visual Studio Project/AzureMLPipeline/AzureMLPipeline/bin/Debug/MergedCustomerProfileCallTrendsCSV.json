@@ -1,0 +1,145 @@
+{
+    "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-08-01/Microsoft.DataFactory.Table.json",
+    "name": "MergedCustomerProfileCallTrendsCSV",
+    "properties": {
+        "structure": [
+            {
+                "name": "Age",
+                "type": "Int16"
+            },
+            {
+                "name": "AnnualIncome",
+                "type": "Int16"
+            },
+            {
+                "name": "CallDropRate",
+                "type": "String"
+            },
+            {
+                "name": "CallFailureRate",
+                "type": "String"
+            },
+            {
+                "name": "CallingNum",
+                "type": "String"
+            },
+            {
+                "name": "CustomerID",
+                "type": "String"
+            },
+            {
+                "name": "CustomerSuspended",
+                "type": "String"
+            },
+            {
+                "name": "Education",
+                "type": "String"
+            },
+            {
+                "name": "Gender",
+                "type": "String"
+            },
+            {
+                "name": "HomeOwner",
+                "type": "String"
+            },
+            {
+                "name": "MaritalStatus",
+                "type": "String"
+            },
+            {
+                "name": "MonthlyBilledAmount",
+                "type": "Int16"
+            },
+            {
+                "name": "NoAdditionalLines",
+                "type": "String"
+            },
+            {
+                "name": "NumberOfComplaints",
+                "type": "Int16"
+            },
+            {
+                "name": "NumberOfMonthUnpaid",
+                "type": "Int16"
+            },
+            {
+                "name": "NumDaysContractEquipmentPlanExpiring",
+                "type": "Int16"
+            },
+            {
+                "name": "Occupation",
+                "type": "String"
+            },
+            {
+                "name": "PenaltyToSwitch",
+                "type": "String"
+            },
+            {
+                "name": "State",
+                "type": "String"
+            },
+            {
+                "name": "TotalMinsUsedInLastMonth",
+                "type": "Int16"
+            },
+            {
+                "name": "UnpaidBalance",
+                "type": "Int16"
+            },
+            {
+                "name": "UsesInternetService",
+                "type": "String"
+            },
+            {
+                "name": "UsesVoiceService",
+                "type": "String"
+            },
+            {
+                "name": "PercentageCallOutsideNetwork",
+                "type": "String"
+            },
+            {
+                "name": "Totalcallduration",
+                "type": "Int16"
+            },
+            {
+                "name": "AvgCallduration",
+                "type": "Int16"
+            }
+        ],
+        "published": false,
+        "type": "AzureBlob",
+        "linkedServiceName": "AzureStorageLinkedService",
+        "typeProperties": {
+            "fileName": "000000_0.csv",
+            "folderPath": "churndata/mlinputcsv/year={year}/month={month}",
+            "format": {
+                "type": "TextFormat",
+                "columnDelimiter": ","
+            },
+            "partitionedBy": [
+                {
+                    "name": "year",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "yyyy"
+                    }
+                },
+                {
+                    "name": "month",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "%M"
+                    }
+                }
+            ]
+        },
+        "availability": {
+            "frequency": "Month",
+            "interval": 1
+        }
+    }
+}

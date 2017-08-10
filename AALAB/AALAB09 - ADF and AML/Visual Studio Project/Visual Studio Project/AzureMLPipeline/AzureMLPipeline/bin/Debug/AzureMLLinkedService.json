@@ -1,0 +1,11 @@
+{
+    "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-08-01/Microsoft.DataFactory.LinkedService.json",
+    "name": "AzureMLLinkedService",
+    "properties": {
+        "type": "AzureML",
+        "typeProperties": {
+            "mlEndpoint": "ENTER THE ENDPOINT",
+            "apiKey": "ENTER THE API KEY"
+        }
+    }
+}

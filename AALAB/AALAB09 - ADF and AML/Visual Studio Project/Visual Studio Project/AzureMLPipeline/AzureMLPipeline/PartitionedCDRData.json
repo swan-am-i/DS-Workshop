@@ -1,0 +1,144 @@
+﻿{
+    "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-08-01/Microsoft.DataFactory.Table.json",
+    "name": "PartitionedCDRData",
+    "properties": {
+        "structure": [
+            {
+                "name": "RecordType",
+                "type": "String"
+            },
+            {
+                "name": "SystemIdentity",
+                "type": "String"
+            },
+            {
+                "name": "FileNum",
+                "type": "String"
+            },
+            {
+                "name": "SwitchNum",
+                "type": "String"
+            },
+            {
+                "name": "CallingNum",
+                "type": "String"
+            },
+            {
+                "name": "CallingIMSI",
+                "type": "String"
+            },
+            {
+                "name": "CalledNum",
+                "type": "String"
+            },
+            {
+                "name": "CalledIMSI",
+                "type": "String"
+            },
+            {
+                "name": "CallDate",
+                "type": "String"
+            },
+            {
+                "name": "CallTime",
+                "type": "String"
+            },
+            {
+                "name": "TimeType",
+                "type": "String"
+            },
+            {
+                "name": "CallPeriod",
+                "type": "Int16"
+            },
+            {
+                "name": "CallingCellID",
+                "type": "String"
+            },
+            {
+                "name": "CalledCellID",
+                "type": "String"
+            },
+            {
+                "name": "ServiceType",
+                "type": "String"
+            },
+            {
+                "name": "Transfer",
+                "type": "String"
+            },
+            {
+                "name": "IMEI",
+                "type": "String"
+            },
+            {
+                "name": "EndType",
+                "type": "String"
+            },
+            {
+                "name": "IncomingTrunk",
+                "type": "String"
+            },
+            {
+                "name": "OutgoingTrunk",
+                "type": "String"
+            },
+            {
+                "name": "MSRN",
+                "type": "String"
+            },
+            {
+                "name": "CalledNum2",
+                "type": "String"
+            },
+            {
+                "name": "FCIFlag",
+                "type": "String"
+            },
+            {
+                "name": "MiscDateTime",
+                "type": "String"
+            },
+            {
+                "name": "YearNo",
+                "type": "Int16"
+            },
+            {
+                "name": "MonthNo",
+                "type": "Int16"
+            }
+        ],
+        "published": false,
+        "type": "AzureBlob",
+        "linkedServiceName": "AzureStorageLinkedService",
+        "typeProperties": {
+            "folderPath": "churndata/partitioneddata/yearno={Year}/monthno={Month}/",
+            "format": {
+                "type": "TextFormat",
+                "columnDelimiter": ","
+            },
+            "partitionedBy": [
+                {
+                    "name": "Year",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "yyyy"
+                    }
+                },
+                {
+                    "name": "Month",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "%M"
+                    }
+                }
+            ]
+        },
+        "availability": {
+            "frequency": "Month",
+            "interval": 1
+        }
+    }
+}

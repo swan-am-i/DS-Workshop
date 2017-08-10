@@ -1,0 +1,4 @@
+C:\Users\samkemp\GitRepos\adf-creating-ml-pipeline\AzureMLPipeline\AzureMLPipeline\bin\Debug\DataFactory
+C:\Users\samkemp\GitRepos\adf-creating-ml-pipeline\AzureMLPipeline\AzureMLPipeline\obj\Debug\DataFactory
+C:\Users\samkemp\OneDrive - Microsoft\AA Labs\The AA Lab - Final\AALAB09 - ADF and AML\Visual Studio Project\AzureMLPipeline\AzureMLPipeline\bin\Debug\DataFactory
+C:\Users\samkemp\OneDrive - Microsoft\AA Labs\The AA Lab - Final\AALAB09 - ADF and AML\Visual Studio Project\AzureMLPipeline\AzureMLPipeline\obj\Debug\DataFactory

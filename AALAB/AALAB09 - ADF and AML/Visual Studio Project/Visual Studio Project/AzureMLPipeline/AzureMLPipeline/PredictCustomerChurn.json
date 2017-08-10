@@ -1,0 +1,34 @@
+﻿{
+    "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-08-01/Microsoft.DataFactory.Pipeline.json",
+    "name": "PredictCustomerChurn",
+    "properties": {
+        "description": "Predict the mobile customers that will churn by month",
+        "activities": [
+            {
+                "type": "AzureMLBatchExecution",
+                "inputs": [
+                    {
+                        "name": "MergedCustomerProfileCallTrendsCSV"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "PredictedChurnCustomersBlob"
+                    }
+                ],
+                "typeProperties": {
+                    "webServiceInput": "MergedCustomerProfileCallTrendsCSV",
+                    "webServiceOutputs": {"output1": "PredictedChurnCustomersBlob"},
+                    "globalParameters": {}
+                },
+                "scheduler": {
+                    "frequency": "Month",
+                    "interval": 1
+                },
+                "name": "PredictiveAnalyticsActivity",
+                "description": "Predict the mobile customers that will likley to churn",
+                "linkedServiceName": "AzureMLLinkedService"
+            }
+        ]
+    }
+}

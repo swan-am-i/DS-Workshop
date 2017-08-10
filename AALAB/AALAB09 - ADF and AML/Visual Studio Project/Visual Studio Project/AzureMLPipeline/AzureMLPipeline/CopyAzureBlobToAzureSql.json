@@ -1,0 +1,46 @@
+{
+    "name": "CopyAzureBlobToAzureSql",
+    "properties": {
+        "description": "Copy predicted customer data from a Azure blob to Azure SQL table",
+        "start": "2015-04-01T00:00:00Z",
+        "end": "2015-05-01T00:00:00Z",
+        "activities": [
+            {
+                "name": "CopyAzureBlobToAzureSql",
+                "description": "Copy Azure Blob File to Sql Azure",
+                "type": "Copy",
+                "inputs": [
+                    {
+                        "name": "PredictedChurnCustomersBlob"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "PredictedChurnCustomersSql"
+                    }
+                ],
+                "typeProperties": {
+                    "source": {
+                        "type": "BlobSource",
+                        "SkipHeaderLineCount": "1"
+                    },
+                    "sink": {
+                        "writeBatchTimeout": "01:00:00",
+                        "writeBatchSize" :  "1000",
+                        "type": "SqlSink",
+                        "SqlWriterTableType": "[dbo].PredictedChurnCustomerDataType",
+                        "SqlWriterStoredProcedureName": "spOverwritePredictedCustomerChurndata"
+                    }
+
+                },
+                "Policy": {
+                    "concurrency": 1,
+                    "executionPriorityOrder": "NewestFirst",
+                    "style": "StartOfInterval",
+                    "retry": 0,
+                    "timeout": "01:00:00"
+                }
+            }
+        ]
+    }
+}

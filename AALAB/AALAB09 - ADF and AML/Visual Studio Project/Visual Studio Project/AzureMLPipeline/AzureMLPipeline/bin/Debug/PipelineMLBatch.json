@@ -1,0 +1,41 @@
+{
+    "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-08-01/Microsoft.DataFactory.Pipeline.json",
+    "name": "PipelineMLBatch",
+    "properties": {
+        "description": "scoring model",
+        "activities": [
+            {
+                "name": "MLScoring",
+                "type": "AzureMLBatchExecution",
+                "linkedServiceName": "AzureMLLinkedService",
+                "typeProperties": {
+                    "webServiceInput": "MergedCustomerProfileCallTrendsCSV",
+                    "webServiceOutputs": {"output1": "PredictedChurnCustomersBlob"},
+                    "globalParameters": { }
+                },
+                "inputs": [
+                    {
+                        "name": "MergedCustomerProfileCallTrendsCSV"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "PredictedChurnCustomersBlob"
+                    }
+                ],
+                "policy": {
+                    "concurrency": 3,
+                    "executionPriorityOrder": "OldestFirst",
+                    "retry": 1,
+                    "timeout": "01:00:00"
+                },
+                "scheduler": {
+                    "frequency": "Month",
+                    "interval": 1
+                }
+            }
+        ],
+        "start": "2015-04-01T00:00:00Z",
+        "end": "2015-05-01T00:00:00Z"
+    }
+}

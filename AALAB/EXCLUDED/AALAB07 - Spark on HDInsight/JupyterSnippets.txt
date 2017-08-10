@@ -1,0 +1,133 @@
+# --------------------- SNIPPET 1 ------------------------
+
+from pyspark import SparkContext
+from pyspark.sql import SQLContext
+from pyspark.sql.types import *
+
+# Create Spark and SQL contexts
+sc = SparkContext('spark://headnodehost:7077', 'pyspark')
+sqlContext = SQLContext(sc)
+
+# --------------------- SNIPPET 2 ------------------------
+
+# Load the data
+hvacText = sc.textFile("wasb:///HdiSamples/SensorSampleData/hvac/HVAC.csv")
+
+# Create the schema
+hvacSchema = StructType([StructField("date", StringType(), False),StructField("time", StringType(), False),StructField("targettemp", IntegerType(), False),StructField("actualtemp", IntegerType(), False),StructField("buildingID", StringType(), False)])
+
+# Parse the data in hvacText
+hvac = hvacText.map(lambda s: s.split(",")).filter(lambda s: s[0] != "Date").map(lambda s:(str(s[0]), str(s[1]), int(s[2]), int(s[3]), str(s[6]) ))
+
+# Create a data frame
+hvacdf = sqlContext.createDataFrame(hvac,hvacSchema)
+
+# Register the data fram as a table to run queries against
+hvacdf.registerAsTable("hvac")
+
+# Run queries against the table and display the data
+data = sqlContext.sql("select buildingID, (targettemp - actualtemp) as temp_diff, date from hvac where date = \"6/1/13\"")
+data.show()
+
+
+# --------------------- SNIPPET 3 ------------------------
+
+from pyspark.ml import Pipeline
+from pyspark.ml.classification import LogisticRegression
+from pyspark.ml.feature import HashingTF, Tokenizer
+from pyspark.sql import Row, SQLContext
+
+import os
+import sys
+from pyspark import SparkConf
+from pyspark import SparkContext
+from pyspark.sql import SQLContext
+from pyspark.sql.types import *
+
+from pyspark.mllib.classification import LogisticRegressionWithSGD
+from pyspark.mllib.regression import LabeledPoint
+from numpy import array
+
+# Assign resources to the application
+conf = SparkConf()
+conf.setMaster('spark://headnodehost:7077')
+conf.setAppName('pysparkregression')
+conf.set("spark.cores.max", "4")
+conf.set("spark.executor.memory", "4g")
+
+sc = SparkContext(conf=conf)
+sqlContext = SQLContext(sc)
+
+# --------------------- SNIPPET 4 ------------------------
+
+# List the structure of data for better understanding. Becuase the data will be
+# loaded as an array, this structure makes it easy to understand what each element
+# in the array corresponds to
+
+# 0 Date
+# 1 Time
+# 2 TargetTemp
+# 3 ActualTemp
+# 4 System
+# 5 SystemAge
+# 6 BuildingID
+
+LabeledDocument = Row("BuildingID", "SystemInfo", "label")
+
+# Define a function that parses the raw CSV file and returns an object of type LabeledDocument
+
+def parseDocument(line):
+    values = [str(x) for x in line.split(',')]
+    if (values[3] > values[2]):
+        hot = 1.0
+    else:
+        hot = 0.0        
+
+    textValue = str(values[4]) + " " + str(values[5])
+
+    return LabeledDocument((values[6]), textValue, hot)
+
+# Load the raw HVAC.csv file, parse it using the function
+data = sc.textFile("wasb:///HdiSamples/SensorSampleData/hvac/HVAC.csv")
+
+documents = data.filter(lambda s: "Date" not in s).map(parseDocument)
+training = documents.toDF()
+
+# --------------------- SNIPPET 5 ------------------------
+
+tokenizer = Tokenizer(inputCol="SystemInfo", outputCol="words")
+hashingTF = HashingTF(inputCol=tokenizer.getOutputCol(), outputCol="features")
+lr = LogisticRegression(maxIter=10, regParam=0.01)
+pipeline = Pipeline(stages=[tokenizer, hashingTF, lr])
+
+
+# --------------------- SNIPPET 6 ------------------------
+model = pipeline.fit(training)
+
+# --------------------- SNIPPET 7 ------------------------
+training.show()
+
+# --------------------- SNIPPET 8 ------------------------
+Document = Row("id", "SystemInfo")
+test = sc.parallelize([(1L, "20 25"),
+              (2L, "4 15"),
+              (3L, "16 9"),
+              (4L, "9 22"),
+              (5L, "17 10"),
+              (6L, "7 22")]) \
+    .map(lambda x: Document(*x)).toDF() 
+
+# --------------------- SNIPPET 9 ------------------------
+# Make predictions on test documents and print columns of interest
+prediction = model.transform(test)
+selected = prediction.select("SystemInfo", "prediction", "probability")
+for row in selected.collect():
+    print row
+
+# --------------------- SNIPPET 10 ------------------------
+Row(SystemInfo=u'20 25', prediction=1.0, probability=DenseVector([0.4999, 0.5001]))
+Row(SystemInfo=u'4 15', prediction=0.0, probability=DenseVector([0.5016, 0.4984]))
+Row(SystemInfo=u'16 9', prediction=1.0, probability=DenseVector([0.4785, 0.5215]))
+Row(SystemInfo=u'9 22', prediction=1.0, probability=DenseVector([0.4549, 0.5451]))
+Row(SystemInfo=u'17 10', prediction=1.0, probability=DenseVector([0.4925, 0.5075]))
+Row(SystemInfo=u'7 22', prediction=0.0, probability=DenseVector([0.5015, 0.4985]))

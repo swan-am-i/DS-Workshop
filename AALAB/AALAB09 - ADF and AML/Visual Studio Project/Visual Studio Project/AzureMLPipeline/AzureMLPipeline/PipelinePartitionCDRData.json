@@ -1,0 +1,52 @@
+﻿{
+    "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-08-01/Microsoft.DataFactory.Pipeline.json",
+    "name": "PartitionCDRData",
+    "properties": {
+        "description": "Partition CDR Data",
+        "activities": [
+            {
+                "type": "HDInsightHive",
+                "typeProperties": {
+                    "scriptPath": "churnhql/preprocessdata.hql",
+                    "scriptLinkedService": "AzureStorageLinkedService",
+                    "storageLinkedServices": [
+                        "AzureStorageLinkedService"
+                    ],
+                    "defines": {
+                        "RawData": "wasb://churndata@ACCOUNTNAME.blob.core.windows.net/rawdata",
+                        "GenRawData": "$$Text.Format('wasb://churndata@ACCOUNTNAME.blob.core.windows.net/genrawdata/{0:yyyy}/{0:%M}',SliceStart)",
+                        "CallsPartitioned": "wasb://churndata@ACCOUNTNAME.blob.core.windows.net/partitioneddata",
+                        "AggregatedData": "$$Text.Format('wasb://churndata@ACCOUNTNAME.blob.core.windows.net/aggregateddata/year={0:yyyy}/month={0:%M}',SliceStart)",
+                        "Year": "$$Text.Format('{0:yyyy}',SliceStart)",
+                        "Month": "$$Text.Format('{0:%M}',SliceStart)",
+                        "Day": "$$Text.Format('{0:%d}',SliceStart)"
+                    }
+                },
+                "inputs": [
+                    {
+                        "name": "GenRawCDRData"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "PartitionedCDRData"
+                    }
+                ],
+                "policy": {
+                    "timeout": "01:00:00",
+                    "concurrency": 1,
+                    "retry": 3
+                },
+                "scheduler": {
+                    "frequency": "Month",
+                    "interval": 1
+                },
+                "name": "PartitionRawCDRData",
+                "linkedServiceName": "HDInsightOnDemandLinkedService"
+            }
+        ],
+        "start": "2015-04-01T00:00:00Z",
+        "end": "2015-05-01T00:00:00Z",
+        "isPaused": false
+    }
+}

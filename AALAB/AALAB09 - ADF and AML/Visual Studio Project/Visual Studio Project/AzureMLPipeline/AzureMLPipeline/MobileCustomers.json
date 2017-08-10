@@ -1,0 +1,80 @@
+﻿{
+    "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-08-01/Microsoft.DataFactory.Table.json",
+    "name": "MobileCustomers",
+    "properties": {
+        "structure": [
+            {
+                "name": "CustomerID",
+                "type": "String"
+            },
+            {
+                "name": "CallingNumber",
+                "type": "String"
+            },
+            {
+                "name": "MaritalStatus",
+                "type": "String"
+            },
+            {
+                "name": "Gender",
+                "type": "String"
+            },
+            {
+                "name": "State",
+                "type": "String"
+            },
+            {
+                "name": "Age",
+                "type": "Int16"
+            },
+            {
+                "name": "AnnualIncome",
+                "type": "Int16"
+            },
+            {
+                "name": "Education",
+                "type": "String"
+            },
+            {
+                "name": "Occupation",
+                "type": "String"
+            },
+            {
+                "name": "HomeOwner",
+                "type": "String"
+            },
+            {
+                "name": "NoAdditionalLines",
+                "type": "Int16"
+            },
+            {
+                "name": "UsesInternetService",
+                "type": "String"
+            },
+            {
+                "name": "UsesVoiceService",
+                "type": "String"
+            },
+            {
+                "name": "NumDaysContractEquipmentPlanExpiring",
+                "type": "Int16"
+            }
+        ],
+        "published": false,
+        "type": "AzureBlob",
+        "linkedServiceName": "AzureStorageLinkedService",
+        "typeProperties": {
+            "folderPath": "churndata/dimcustomer/",
+            "format": {
+                "type": "TextFormat",
+                "columnDelimiter": ","
+            }
+        },
+        "availability": {
+            "frequency": "Month",
+            "interval": 1
+        },
+        "external": true,
+        "policy": {}
+    }
+}

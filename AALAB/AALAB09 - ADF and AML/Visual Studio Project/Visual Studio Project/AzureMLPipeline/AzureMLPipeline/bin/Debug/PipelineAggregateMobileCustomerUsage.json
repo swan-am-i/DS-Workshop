@@ -1,0 +1,89 @@
+{
+    "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-08-01/Microsoft.DataFactory.Pipeline.json",
+    "name": "AggregateMobileCustomerUsage",
+    "properties": {
+        "description": "Merge the Mobile Customer Profile data and Usage data",
+        "activities": [
+            {
+                "type": "HDInsightHive",
+                "typeProperties": {
+                    "scriptPath": "churnhql/aggregatedata.hql",
+                    "scriptLinkedService": "AzureStorageLinkedService",
+                    "storageLinkedServices": [
+                        "AzureStorageLinkedService"
+                    ],
+                    "defines": {
+                        "CallsPartitioned": "wasb://churndata@ACCOUNTNAME.blob.core.windows.net/partitioneddata",
+                        "AggregatedData": "wasb://churndata@ACCOUNTNAME.blob.core.windows.net/aggregateddata",
+                        "CustomerData": "wasb://churndata@ACCOUNTNAME.blob.core.windows.net/dimcustomer",
+                        "Customer360": "wasb://churndata@ACCOUNTNAME.blob.core.windows.net/mlinput",
+                        "Year": "$$Text.Format('{0:yyyy}',SliceStart)",
+                        "Month": "$$Text.Format('{0:%M}',SliceStart)",
+                        "Day": "$$Text.Format('{0:%d}',SliceStart)"
+                    }
+                },
+                "inputs": [
+                    {
+                        "name": "MobileCustomers"
+                    },
+                    {
+                        "name": "PartitionedCDRData"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "MergedCustomerProfileCallTrends"
+                    }
+                ],
+                "policy": {
+                    "timeout": "01:00:00",
+                    "concurrency": 1,
+                    "executionPriorityOrder": "NewestFirst",
+                    "retry": 1
+                },
+                "scheduler": {
+                    "frequency": "Month",
+                    "interval": 1
+                },
+                "name": "AggregateMobileCustomerUsage",
+                "linkedServiceName": "HDInsightOnDemandLinkedService"
+            },
+            {
+                "type": "Copy",
+                "typeProperties": {
+                    "source": {
+                        "type": "BlobSource"
+                    },
+                    "sink": {
+                        "type": "BlobSink",
+                        "writeBatchSize": 0,
+                        "writeBatchTimeout": "00:00:00"
+                    }
+                },
+                "inputs": [
+                    {
+                        "name": "MergedCustomerProfileCallTrends"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "MergedCustomerProfileCallTrendsCSV"
+                    }
+                ],
+                "policy": {
+                    "timeout": "01:00:00",
+                    "concurrency": 1,
+                    "retry": 1
+                },
+                "scheduler": {
+                    "frequency": "Month",
+                    "interval": 1
+                },
+                "name": "RenameHiveOutput2CSV"
+            }
+        ],
+        "start": "2015-04-01T00:00:00Z",
+        "end": "2015-05-01T00:00:00Z",
+        "isPaused": false
+    }
+}

@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>8538c627-9a00-4f93-9fd4-001c60e8d118</ProjectGuid>
+    <OutputType>File</OutputType>
+    <AssemblyName>DataFactory</AssemblyName>
+    <ApiVersion>2015-08-01</ApiVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <Name>AzureMLPipeline</Name>
+    <RootNamespace>AzureMLPipeline</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ADFConfigFileToPublish>
+    </ADFConfigFileToPublish>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Dependencies\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Script Include="AzureMLLinkedService.json" />
+    <Script Include="AzureSqlLinkedService.json" />
+    <Script Include="AzureStorageLinkedService.json" />
+    <Script Include="CopyAzureBlobToAzureSql.json" />
+    <Script Include="GenRawCDRData.json" />
+    <Script Include="HDInsightOnDemandLinkedService.json" />
+    <Script Include="MergedCustomerProfileCallTrends.json" />
+    <Script Include="MergedCustomerProfileCallTrendsCSV.json" />
+    <Script Include="MobileCustomers.json" />
+    <Script Include="PartitionedCDRData.json" />
+    <Script Include="PipelineAggregateMobileCustomerUsage.json" />
+    <Script Include="PipelineMLBatch.json" />
+    <Script Include="PipelinePartitionCDRData.json" />
+    <Script Include="PredictedChurnCustomersBlob.json" />
+    <Script Include="PredictedChurnCustomersSql.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Dependencies\aggregatedata.hql">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Dependencies\preprocessdata.hql">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(AppData)\Microsoft\DataFactory Tools for Visual Studio\MsBuild\1.0\DataFactory.targets" />
+</Project>

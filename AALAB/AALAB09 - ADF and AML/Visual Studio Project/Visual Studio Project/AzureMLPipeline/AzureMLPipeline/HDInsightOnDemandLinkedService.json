@@ -1,0 +1,13 @@
+﻿{
+    "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-08-01/Microsoft.DataFactory.LinkedService.json",
+    "name": "HDInsightOnDemandLinkedService",
+    "properties": {
+        "type": "HDInsightOnDemand",
+        "typeProperties": {
+            "clusterSize": 2,
+            "timeToLive": "00:30:00",
+            "version": "3.1",
+            "linkedServiceName": "AzureStorageLinkedService"
+        }
+    }
+}
